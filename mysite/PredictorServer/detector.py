@@ -5,9 +5,13 @@ from tensorflow.keras.preprocessing.image import img_to_array
 from tensorflow.keras.models import load_model
 
 
+#Loading Facial Recognition Model
+print("[INFO] loading facial recognition model...")
 prototxtPath = "PredictorServer/deploy.prototxt"
 weightsPath = "PredictorServer/res10_300x300_ssd_iter_140000_fp16.caffemodel"
 net = cv2.dnn.readNetFromCaffe(prototxtPath, weightsPath)
+
+#Loading Mask Detection Model
 print("[INFO] loading face mask detector model...")
 model = load_model("PredictorServer/mask_detect.model")
 '''
@@ -20,7 +24,7 @@ model = load_model("PredictorServer/mask_detect.model")
     2. For each detected face with high probability (>0.5), it will select t
     
 '''
-def detect(frame):  
+def detect(frame,retCrops=False):  
 #Height & Weight
     h,w = frame.shape[:2]
     #Preprocess image to the 
@@ -30,6 +34,7 @@ def detect(frame):
     detections = net.forward()
     detection_count=0
     mask_count=0
+    crops=[]
     for i in range(0 , detections.shape[2]):
         confidence = detections[0, 0, i, 2]
         if confidence > 0.5:
@@ -46,6 +51,9 @@ def detect(frame):
             detection_count=detection_count+1
             if mask>withoutMask:
                 mask_count=mask_count+1
-    return (detection_count,mask_count)
+            if retCrops:
+                crops.append([x,y,W,H,1 if mask>withoutMask else 0])
+
+    return np.array(crops) if retCrops else (detection_count,mask_count) 
         
 
