@@ -1,8 +1,8 @@
 import requests
 
-url="http://40.115.35.164:8000/predict"
+#url="http://40.115.35.164:8000/predict"
 
-#url="http://localhost:8000/predict"
+url="http://localhost:8000/predict"
 
 def request(filename):
     with open(filename,mode="rb") as f:
