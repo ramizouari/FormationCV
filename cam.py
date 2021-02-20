@@ -13,11 +13,12 @@ import os
 #Main Class
 class CameraRecorderWithPredictor():
     #Initialisation with a temporary file path tmp_name & server url
-    def __init__(self,tmp_name,url):
+    def __init__(self,tmp_name,url,camera=0):
         self.response=""
         self.tmp_name=tmp_name
         self.url=url
         self.ready=True
+        self.camera=camera
         pass
     
     #Send an image to the server
@@ -33,7 +34,7 @@ class CameraRecorderWithPredictor():
 
     def loop(self):
 #Use PC Camera
-        video=cv2.VideoCapture(0)
+        video=cv2.VideoCapture(self.camera)
         while True:
             _, frame = video.read()
 #Write Image to temporary file
@@ -72,5 +73,5 @@ class CameraRecorderWithPredictor():
     pass
 #http://40.115.35.164:8000/predict/detailed
 recorder= CameraRecorderWithPredictor(
-    "test.jpeg", "http://localhost:8000/predict/detailed")
+    "test.jpeg", "http://localhost:8000/predict/detailed",camera="rtsp://cam:1234@192.168.1.124:8320/h264_ulaw.sdp")
 recorder.loop()

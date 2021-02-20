@@ -33,7 +33,7 @@ class CameraRecorderWithPredictor():
 
     def loop(self):
 #Use PC Camera
-        video=cv2.VideoCapture(0)
+        video=cv2.VideoCapture("rtsp://cam:1234@192.168.43.1:8320/h264_ulaw.sdp")
         while True:
             _, frame = video.read()
 #Write Image to temporary file
